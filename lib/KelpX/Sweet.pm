@@ -70,18 +70,7 @@ KelpX::Sweet - Kelp with extra sweeteners
 
 =head1 DESCRIPTION
 
-Kelp is good. Kelp is great. But what if you could give it more syntactic sugar and separate your routes from the logic in a cleaner way? KelpX::Sweet attempts to do just that. It basically looks like this:
-
-TestApp
--- conf
--- views
--- log
--- Route
-----MyRoute.pm
--- Controller
-----MyController.pm
-
-As you can see, everything else is pretty much the same. Check out the tutorial below for more information!
+Kelp is good. Kelp is great. But what if you could give it more syntactic sugar and separate your routes from the logic in a cleaner way? KelpX::Sweet attempts to do just that.
 
 =head1 SIMPLE TUTORIAL
 
@@ -147,7 +136,7 @@ Will trigger on POST requests only
 
 =head2 bridge
 
-Bridges are cool, please check out the Kelp documentation for more information on what they do and how they work.
+Bridges are cool, so please check out the Kelp documentation for more information on what they do and how they work.
 
   bridge '/users/:id' => sub {
       unless ($self->user->logged_in) {
@@ -158,6 +147,21 @@ Bridges are cool, please check out the Kelp documentation for more information o
   };
 
   get '/users/:id/view' => 'Controller::Users::view';
+
+=head1 REALLY COOL THINGS TO NOTE
+
+=head2 Default imports
+
+You should be aware that KelpX::Sweet will import warnings, strict and true for you. Because of this, there is no requirement to 
+add a true value to the end of your file. I chose this because it just makes things look a little cleaner.
+
+=head2 KelpX::Sweet starter
+
+On installation of KelpX::Sweet, you'll receive a file called C<kelpx-sweet>. Simply run this, passing it the name of your module 
+and it will create a working test app with minimal boilerplate so you can get started straight away. Just run it as:
+
+  $ kelpx-sweet MyApp
+  $ kelpx-sweet Something::With::A::Larger::Namespace
 
 =head1 AUTHOR
 
