@@ -55,7 +55,7 @@ sub hello {
 ```
 
 You now have a fully functional Kelp app! Remember, because this module is just a wrapper, you can do pretty much anything [Kelp](https://metacpan.org/pod/Kelp) 
-can, like `$self-&gt;param` for example.
+can, like `$self-`>param> for example.
 
 # SUGARY SYNTAX
 

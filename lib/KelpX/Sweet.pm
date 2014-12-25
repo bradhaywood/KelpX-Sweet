@@ -115,7 +115,7 @@ B<MyApp/Controller/Root.pm>
   }
 
 You now have a fully functional Kelp app! Remember, because this module is just a wrapper, you can do pretty much anything L<Kelp> 
-can, like C<$self-&gt;param> for example.
+can, like C<$self->>param> for example.
 
 =head1 SUGARY SYNTAX
 
