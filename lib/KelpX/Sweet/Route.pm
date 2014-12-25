@@ -1,8 +1,15 @@
 package KelpX::Sweet::Route;
 
+use warnings;
+use strict;
+use true;
+
 sub import {
     my $routes = {};
     my $caller = caller;
+    strict->import();
+    warnings->import();
+    true->import();
     {
         no strict 'refs';
         push @{"${caller}::ISA"}, 'Kelp';
