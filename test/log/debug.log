@@ -1,0 +1,57 @@
+2014-11-10 14:22:10 - info - 127.0.0.1 - GET / - CODE(0x26ba928)
+2014-11-10 14:22:11 - info - 127.0.0.1 - GET / - CODE(0x26ba928)
+2014-11-10 14:23:08 - info - 127.0.0.1 - GET / - CODE(0x1d32928)
+2014-11-10 14:23:15 - info - 127.0.0.1 - GET /hello/World - CODE(0x1d32988)
+2014-11-10 14:23:18 - info - 127.0.0.1 - GET /hello/brad - CODE(0x1d32988)
+2014-11-10 14:35:38 - info - 127.0.0.1 - GET / - CODE(0x1e17928)
+2014-11-10 14:35:43 - critical - Can't locate object method "controller" via package "TestApp" at lib/TestApp.pm line 7.
+
+2014-11-10 14:42:02 - critical - Could not load controller Root: Can't locate TestApp/Controller/Root.pm in @INC (@INC contains: lib ../lib/ lib/ /opt/perl-5.14.4/lib/site_perl/5.14.4/x86_64-linux /opt/perl-5.14.4/lib/site_perl/5.14.4 /opt/perl-5.14.4/lib/5.14.4/x86_64-linux /opt/perl-5.14.4/lib/5.14.4 .) at (eval 49) line 2.
+BEGIN failed--compilation aborted at (eval 49) line 2.
+
+
+2014-11-10 14:43:19 - critical - Can't locate object method "new" via package "TestApp::Controller::Root" at ../lib//Frugalicious.pm line 52.
+
+2014-11-10 14:43:30 - critical - Can't locate object method "action" via package "TestApp::Controller::Root" at lib/TestApp.pm line 7.
+
+2014-11-10 14:44:30 - critical - Use of uninitialized value $name in concatenation (.) or string at lib/TestApp/Controller/Root.pm line 8.
+
+2014-11-10 14:48:20 - critical - Use of uninitialized value $name in concatenation (.) or string at lib/TestApp/Controller/Root.pm line 8.
+
+2014-11-10 14:48:39 - critical - Use of uninitialized value $name in concatenation (.) or string at lib/TestApp/Controller/Root.pm line 8.
+
+2014-11-10 14:49:02 - critical - Could not load controller Root: Global symbol "$self" requires explicit package name at ../lib//Frugalicious/Controller.pm line 7.
+Compilation failed in require at /opt/perl-5.14.4/lib/site_perl/5.14.4/Module/Runtime.pm line 317.
+Compilation failed in require at (eval 49) line 2.
+BEGIN failed--compilation aborted at (eval 49) line 2.
+
+
+2014-11-10 14:49:33 - critical - Use of uninitialized value $name in concatenation (.) or string at lib/TestApp/Controller/Root.pm line 8.
+
+2014-11-10 14:55:33 - info - 127.0.0.1 - GET / - CODE(0x1851928)
+2014-11-10 14:55:41 - info - 127.0.0.1 - GET /hello/Bootly - TestApp::Controller::Root::hello
+2014-11-10 14:56:52 - info - 127.0.0.1 - GET /hello/Bootly - TestApp::Controller::Root::hello
+2014-11-10 14:56:56 - info - 127.0.0.1 - GET /hello/Bootly - TestApp::Controller::Root::hello
+2014-11-10 14:57:00 - info - 127.0.0.1 - GET /hello/Bootly - TestApp::Controller::Root::hello
+2014-11-10 14:57:03 - info - 127.0.0.1 - GET /hello/Bootly - TestApp::Controller::Root::hello
+2014-11-10 14:59:46 - info - 127.0.0.1 - GET / - CODE(0xf6d928)
+2014-11-10 14:59:49 - info - 127.0.0.1 - GET /hello/Bootly - TestApp::Controller::Root::hello
+2014-11-10 14:59:55 - info - 127.0.0.1 - GET /hello/Bootly - TestApp::Controller::Root::hello
+2014-11-10 15:00:00 - info - 127.0.0.1 - GET /hello/Bootly - TestApp::Controller::Root::hello
+2014-11-11 10:37:01 - info - 127.0.0.1 - GET / - CODE(0x16d3928)
+2014-11-11 10:37:05 - info - 127.0.0.1 - GET /check/5 - CODE(0x1c24b80)
+2014-11-11 10:37:05 - critical - CODE(0x1c24b80) did not render for method GET at /opt/perl-5.14.4/lib/site_perl/5.14.4/Kelp.pm line 196.
+
+2014-11-11 10:37:10 - info - 127.0.0.1 - GET /check/5/ok - CODE(0x1c24b80)
+2014-11-11 10:37:10 - info - 127.0.0.1 - GET /check/5/ok - CODE(0x1c24cb8)
+2014-11-11 10:37:24 - info - 127.0.0.1 - GET /check/5/ok - CODE(0x1f08b80)
+2014-11-11 10:38:31 - info - 127.0.0.1 - GET /check/5/ok - CODE(0x2ab0b40)
+2014-11-11 10:38:31 - critical - Can't call method "stash" on an undefined value at lib/TestApp.pm line 12.
+
+2014-11-11 10:38:58 - info - 127.0.0.1 - GET /check/5/ok - CODE(0x2cfeb40)
+2014-11-11 10:38:58 - info - 127.0.0.1 - GET /check/5/ok - CODE(0x2cfecf0)
+2014-11-11 10:38:59 - info - 127.0.0.1 - GET /check/5/ok - CODE(0x2cfeb40)
+2014-11-11 10:38:59 - info - 127.0.0.1 - GET /check/5/ok - CODE(0x2cfecf0)
+2014-11-11 10:40:23 - info - 127.0.0.1 - GET /check/5/ok - CODE(0x2badae0)
+2014-11-11 10:40:27 - info - 127.0.0.1 - GET /check/5/ok - CODE(0x2badae0)
+2014-11-11 10:40:27 - info - 127.0.0.1 - GET /check/5/ok - CODE(0x2badc60)
