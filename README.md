@@ -78,6 +78,14 @@ Will trigger on POST requests only
 post '/someform' => sub { 'Posted like a boss' };
 ```
 
+## any
+
+Will trigger on POST **or** GET requests
+
+```perl
+any '/omni' => sub { 'Hit me up on any request' };
+```
+
 ## bridge
 
 Bridges are cool, so please check out the Kelp documentation for more information on what they do and how they work.

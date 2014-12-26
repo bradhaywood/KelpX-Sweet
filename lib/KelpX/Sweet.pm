@@ -51,6 +51,9 @@ sub import {
                     if ($route->{$url}->{bridge}) {
                         $r->add([ uc($route->{$url}->{type}) => $url ], { to => $route->{$url}->{coderef}, bridge => 1 });
                     }
+                    elsif ($route->{$url}->{type} eq 'any') {
+                        $r->add($url, $route->{$url}->{coderef});
+                    }
                     else {
                         $r->add([ uc($route->{$url}->{type}) => $url ], $route->{$url}->{coderef});
                     }
@@ -133,6 +136,12 @@ This will trigger a standard GET request.
 Will trigger on POST requests only
 
   post '/someform' => sub { 'Posted like a boss' };
+
+=head2 any
+
+Will trigger on POST B<or> GET requests
+
+  any '/omni' => sub { 'Hit me up on any request' };
 
 =head2 bridge
 

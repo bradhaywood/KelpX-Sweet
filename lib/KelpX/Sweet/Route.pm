@@ -31,6 +31,14 @@ sub import {
             };
         };
 
+        *{"${caller}::any"} = sub {
+            my ($name, $coderef) = @_;
+            $routes->{$name} = {
+                type    => 'any',
+                coderef => $coderef,
+            };
+        };
+
         *{"${caller}::bridge"} = sub {
             my ($name, $coderef, $type) = @_;
             $type //= 'get';
