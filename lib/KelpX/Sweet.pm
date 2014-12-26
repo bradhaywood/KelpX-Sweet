@@ -120,7 +120,7 @@ can, like C<$self->>param> for example.
 =head1 SUGARY SYNTAX
 
 By sugar, we mean human readable and easy to use. You no longer need a build method, then to call ->add on an object for your 
-routes. It uses a similar syntax to L<Kelp::Lite>. You'll also find one called C<bridge>.
+routes. It uses a similar syntax to L<Kelp::Less>. You'll also find one called C<bridge>.
 
 =head2 get
 

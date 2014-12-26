@@ -60,7 +60,7 @@ can, like `$self-`>param> for example.
 # SUGARY SYNTAX
 
 By sugar, we mean human readable and easy to use. You no longer need a build method, then to call ->add on an object for your 
-routes. It uses a similar syntax to [Kelp::Lite](https://metacpan.org/pod/Kelp::Lite). You'll also find one called `bridge`.
+routes. It uses a similar syntax to [Kelp::Less](https://metacpan.org/pod/Kelp::Less). You'll also find one called `bridge`.
 
 ## get
 
