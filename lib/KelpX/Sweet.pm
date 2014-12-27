@@ -284,6 +284,16 @@ Then just use it as you normally would in Catalyst (except we store it in C<$sel
 
 KelpX::Sweet will loop through all your schemas sources and create models based on your alias, and the sources name. So, C<Alias::SourceName>.
 
+When we start our app, even though we've only added LittleDB, you'll see we have the new ones based on our Schema. Neat!
+
+  .----------------------------------------------------------.
+  | Model                                | Alias             |
+  +--------------------------------------+-------------------+
+  | TestApp::Model::LittleDB             | LittleDB          |
+  | LittleDB::Schema::ResultSet::User    | LittleDB::User    |
+  | LittleDB::Schema::ResultSet::Product | LittleDB::Product |
+  '--------------------------------------+-------------------'
+
 =head1 REALLY COOL THINGS TO NOTE
 
 =head2 Default imports

@@ -182,6 +182,18 @@ sub users {
 
 KelpX::Sweet will loop through all your schemas sources and create models based on your alias, and the sources name. So, `Alias::SourceName`.
 
+When we start our app, even though we've only added LittleDB, you'll see we have the new ones based on our Schema. Neat!
+
+```
+.----------------------------------------------------------.
+| Model                                | Alias             |
++--------------------------------------+-------------------+
+| TestApp::Model::LittleDB             | LittleDB          |
+| LittleDB::Schema::ResultSet::User    | LittleDB::User    |
+| LittleDB::Schema::ResultSet::Product | LittleDB::Product |
+'--------------------------------------+-------------------'
+```
+
 # REALLY COOL THINGS TO NOTE
 
 ## Default imports
