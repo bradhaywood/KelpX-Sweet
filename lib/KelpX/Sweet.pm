@@ -42,9 +42,53 @@ sub import {
             print $route_tb . "\n";
         };
 
+        *{"${caller}::model"} = sub {
+            my ($self, $model) = @_;
+            return $self->{_models}->{$model};
+        };
+
         *{"${caller}::build"} = sub {
             my ($self) = @_;
-            my $r      = $self->routes;
+            my $config = $self->config_hash;
+            # models
+            if ($config->{models}) {
+                $self->{_models} = {};
+                my $model_tb = Text::ASCIITable->new;
+                $model_tb->setCols('Model', 'Alias');
+                unless (ref $config->{models} eq 'HASH') {
+                    die "config: models expects a hash reference\n";
+                }
+
+                for my $model (keys %{$config->{models}}) {
+                    my $name = $model;
+                    my $opts = $config->{models}->{$model}; 
+                    my $mod  = $opts->{model};
+                    eval "use $mod;";
+                    if ($@) {
+                        die "Could not load model $mod: $@";
+                    }
+
+                    my @args = @{$opts->{args}};
+                    if (my $ret = $mod->build(@args)) {
+                        if (ref $ret) {
+                            $model_tb->addRow($mod, $name);
+                            $self->{_models}->{$name} = $ret;
+                        }
+                        else {
+                            die "Did not return a valid object from models build(): $name\n";
+                        }
+                    }
+                    else {
+                        die "build() failed: $mod";
+                    }
+                }
+
+                if (scalar keys %{$self->{_models}} > 0) {
+                    print $model_tb . "\n";
+                }
+            }
+            # routes 
+            my $r = $self->routes;
             
             for my $route (@$routes) {
                 for my $url (keys %$route) {
@@ -156,6 +200,46 @@ Bridges are cool, so please check out the Kelp documentation for more informatio
   };
 
   get '/users/:id/view' => 'Controller::Users::view';
+
+=head1 MODELS
+
+You can always use an attribute to create a database connection, or separate them using models in a slightly cleaner way.
+In your config you supply a hash reference with the models alias (what you will reference it as in code), the full path, and finally any 
+arguments it might have (like the dbi line, username and password).
+
+  # config.pl
+  models => {
+      'LittleDB' => {
+          'model' => 'TestApp::Model::LittleDB',
+          'args'  => ['dbi:SQLite:testapp.db'],
+      },
+  },
+
+Then, you create C<TestApp::Model::LittleDB>
+
+  package TestApp::Model::LittleDB;
+
+  use KelpX::Sweet::Model;
+  use DBIx::Lite;
+
+  sub build {
+      my ($self, @args) = @_;
+      return DBIx::Lite->connect(@args);
+  }
+
+As you can see, the C<build> function returns the DB object you want. You can obviously use DBIx::Class or whatever you want here.
+
+That's all you need. Now you can pull that model instance out at any time in your controllers with C<model>.
+
+  package TestApp::Controller::User;
+
+  use KelpX::Sweet::Controller;
+
+  sub users {
+      my ($self) = @_;
+      my @users  = $self->model('LittleDB')->table('users')->all;
+      return join ', ', map { $_->name } @users;
+  }
 
 =head1 REALLY COOL THINGS TO NOTE
 

@@ -102,6 +102,52 @@ bridge '/users/:id' => sub {
 get '/users/:id/view' => 'Controller::Users::view';
 ```
 
+# MODELS
+
+You can always use an attribute to create a database connection, or separate them using models in a slightly cleaner way.
+In your config you supply a hash reference with the models alias (what you will reference it as in code), the full path, and finally any 
+arguments it might have (like the dbi line, username and password).
+
+```perl
+# config.pl
+models => {
+    'LittleDB' => {
+        'model' => 'TestApp::Model::LittleDB',
+        'args'  => ['dbi:SQLite:testapp.db'],
+    },
+},
+```
+
+Then, you create `TestApp::Model::LittleDB`
+
+```perl
+package TestApp::Model::LittleDB;
+
+use KelpX::Sweet::Model;
+use DBIx::Lite;
+
+sub build {
+    my ($self, @args) = @_;
+    return DBIx::Lite->connect(@args);
+}
+```
+
+As you can see, the `build` function returns the DB object you want. You can obviously use DBIx::Class or whatever you want here.
+
+That's all you need. Now you can pull that model instance out at any time in your controllers with `model`.
+
+```perl
+package TestApp::Controller::User;
+
+use KelpX::Sweet::Controller;
+
+sub users {
+    my ($self) = @_;
+    my @users  = $self->model('LittleDB')->table('users')->all;
+    return join ', ', map { $_->name } @users;
+}
+```
+
 # REALLY COOL THINGS TO NOTE
 
 ## Default imports
