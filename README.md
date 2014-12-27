@@ -148,6 +148,40 @@ sub users {
 }
 ```
 
+## Models and DBIx::Class
+
+If you enjoy the way Catalyst handles DBIx::Class models, you're going to love this (I hope so, at least). KelpX::Sweet will automagically 
+create models based on the sources of your schema if it detects it's a DBIx::Class::Schema.
+Nothing really has to change, KelpX::Sweet will figure it out on its own.
+
+```perl
+package TestApp::Model::LittleDB;
+
+use KelpX::Sweet::Model;
+use LittleDB::Schema;
+
+sub build {
+    my ($self, @args) = @_;
+    return LittleDB::Schema->connect(@args);
+}
+```
+
+Then just use it as you normally would in Catalyst (except we store it in `$self`, not `$c`).
+
+```perl
+package TestApp::Controller::User;
+
+use KelpX::Sweet::Controller;
+
+sub users {
+    my ($self) = @_;
+    my @users = $self->model('LittleDB::User')->all;
+    return join ', ', map { $_->name } @users;
+}
+```
+
+KelpX::Sweet will loop through all your schemas sources and create models based on your alias, and the sources name. So, `Alias::SourceName`.
+
 # REALLY COOL THINGS TO NOTE
 
 ## Default imports

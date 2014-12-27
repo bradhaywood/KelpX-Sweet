@@ -73,6 +73,19 @@ sub import {
                         if (ref $ret) {
                             $model_tb->addRow($mod, $name);
                             $self->{_models}->{$name} = $ret;
+                        
+                            # is this dbix::class?
+                            require mro;
+                            my $dbref = ref $ret;
+                            if (grep { $_ eq 'DBIx::Class::Schema' } @{mro::get_linear_isa($dbref)}) {
+                                if ($dbref->can('sources')) {
+                                    my @sources = $dbref->sources;
+                                    for my $source (@sources) {
+                                        $self->{_models}->{"${name}::${source}"} = $ret->resultset($source);
+                                        $model_tb->addRow("${dbref}::ResultSet::${source}", "${name}::${source}");
+                                    }
+                                }
+                            }
                         }
                         else {
                             die "Did not return a valid object from models build(): $name\n";
@@ -240,6 +253,36 @@ That's all you need. Now you can pull that model instance out at any time in you
       my @users  = $self->model('LittleDB')->table('users')->all;
       return join ', ', map { $_->name } @users;
   }
+
+=head2 Models and DBIx::Class
+
+If you enjoy the way Catalyst handles DBIx::Class models, you're going to love this (I hope so, at least). KelpX::Sweet will automagically 
+create models based on the sources of your schema if it detects it's a DBIx::Class::Schema.
+Nothing really has to change, KelpX::Sweet will figure it out on its own.
+
+  package TestApp::Model::LittleDB;
+
+  use KelpX::Sweet::Model;
+  use LittleDB::Schema;
+
+  sub build {
+      my ($self, @args) = @_;
+      return LittleDB::Schema->connect(@args);
+  }
+
+Then just use it as you normally would in Catalyst (except we store it in C<$self>, not C<$c>).
+
+  package TestApp::Controller::User;
+  
+  use KelpX::Sweet::Controller;
+  
+  sub users {
+      my ($self) = @_;
+      my @users = $self->model('LittleDB::User')->all;
+      return join ', ', map { $_->name } @users;
+  }
+
+KelpX::Sweet will loop through all your schemas sources and create models based on your alias, and the sources name. So, C<Alias::SourceName>.
 
 =head1 REALLY COOL THINGS TO NOTE
 
