@@ -194,6 +194,36 @@ When we start our app, even though we've only added LittleDB, you'll see we have
 '--------------------------------------+-------------------'
 ```
 
+# VIEWS
+
+OK, so to try and not separate too much, I've chosen not to include views. Just use the standard Kelp modules 
+(ie: [Kelp::Module::Template::Toolkit](https://metacpan.org/pod/Kelp::Module::Template::Toolkit)). However, there is a convenience method mentioned below.
+
+## detach
+
+This method will call `template` for you with the added benefit of automatically filling out the filename and including whatever 
+is in the stash for you.
+
+```perl
+ package MyApp::Controller::Awesome;
+
+ use KelpX::Sweet::Controller;
+
+ sub hello {
+     my ($self) = @_;
+     $self->stash->{name} = 'World';
+     $self->detach;
+ }
+```
+
+Then, you just create `hello.tt`.
+
+```
+<h2>Hello, [% name %]</h2>
+```
+
+While not really required, it does save a bit of typing and can come in quite useful.
+
 # REALLY COOL THINGS TO NOTE
 
 ## Default imports
