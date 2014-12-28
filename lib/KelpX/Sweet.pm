@@ -4,6 +4,7 @@ use warnings;
 use strict;
 use true;
 use Text::ASCIITable;
+use FindBin;
 use base 'Kelp';
 
 our $VERSION = '0.001';
@@ -15,6 +16,7 @@ sub import {
     true->import();
     my $caller = caller;
     my $routes = [];
+    my $configs = {};
     {
         no strict 'refs';
         push @{"${caller}::ISA"}, 'Kelp';
@@ -47,9 +49,23 @@ sub import {
             return $self->{_models}->{$model};
         };
 
+        *{"${caller}::path_to"} = sub { return $FindBin::Bin; };
+
+        *{"${caller}::cfg"} = sub {
+            my ($key, $hash) = @_;
+            $configs->{$key} = $hash;
+        };
+
         *{"${caller}::build"} = sub {
             my ($self) = @_;
             my $config = $self->config_hash;
+            # config
+            if (scalar keys %$configs > 0) {
+                for my $key (keys %$configs) {
+                    $config->{"+${key}"} = $configs->{$key};
+                }
+            }
+                    
             # models
             if ($config->{models}) {
                 $self->{_models} = {};
@@ -100,9 +116,8 @@ sub import {
                     print $model_tb . "\n";
                 }
             }
-            # routes 
+            # routes
             my $r = $self->routes;
-            
             for my $route (@$routes) {
                 for my $url (keys %$route) {
                     if ($route->{$url}->{bridge}) {
@@ -116,6 +131,22 @@ sub import {
                     }
                 }
             }
+        };
+
+        *{"${caller}::detach"} = sub {
+            my ($self) = @_;
+
+            my @caller = caller(1);
+            my $fullpath = $caller[3];
+            my $name;
+            if ($fullpath =~ /.+::(.+)$/) {
+                $name = $1;
+            }
+
+            if ($name) {
+                print "[debug] Rendering template: $name\n";
+                $self->template($name, $self->stash);
+            }    
         };
     }
 }
@@ -293,6 +324,32 @@ When we start our app, even though we've only added LittleDB, you'll see we have
   | LittleDB::Schema::ResultSet::User    | LittleDB::User    |
   | LittleDB::Schema::ResultSet::Product | LittleDB::Product |
   '--------------------------------------+-------------------'
+
+=head1 VIEWS
+
+OK, so to try and not separate too much, I've chosen not to include views. Just use the standard Kelp modules 
+(ie: L<Kelp::Module::Template::Toolkit>). However, there is a convenience method mentioned below.
+
+=head2 detach
+
+This method will call C<template> for you with the added benefit of automatically filling out the filename and including whatever 
+is in the stash for you.
+
+  package MyApp::Controller::Awesome;
+ 
+  use KelpX::Sweet::Controller;
+
+  sub hello {
+      my ($self) = @_;
+      $self->stash->{name} = 'World';
+      $self->detach;
+  }
+
+Then, you just create C<hello.tt>.
+
+  <h2>Hello, [% name %]</h2>
+
+While not really required, it does save a bit of typing and can come in quite useful.
 
 =head1 REALLY COOL THINGS TO NOTE
 
