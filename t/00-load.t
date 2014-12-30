@@ -7,7 +7,7 @@ use Test::More;
 plan tests => 1;
 
 BEGIN {
-    use_ok( 'Frugalicious' ) || print "Bail out!\n";
+    use_ok( 'KelpX::Sweet' ) || print "Bail out!\n";
 }
 
-diag( "Testing Frugalicious $Frugalicious::VERSION, Perl $], $^X" );
+diag( "Testing KelpX::Sweet $KelpX::Sweet::VERSION, Perl $], $^X" );
