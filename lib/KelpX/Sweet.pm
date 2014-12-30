@@ -144,7 +144,7 @@ sub import {
             }
 
             if ($name) {
-                print "[debug] Rendering template: $name\n";
+                print "[debug] Rendering template: $name\n" if $ENV{KELPX_SWEET_DEBUG};
                 $self->template($name, $self->stash);
             }    
         };

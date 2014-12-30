@@ -7,6 +7,12 @@ WriteMakefile(
     CONFIGURE_REQUIRES => { 'ExtUtils::MakeMaker' },
     DISTNAME        => 'KelpX-Sweet',
     EXE_FILES       => [ 'bin/kelpx-sweet' ],
+    TEST_REQUIRES   => {
+        'Test::More' => 0,
+        'Kelp::Test' => 0,
+        'Kelp::Module::Template::Toolkit' => 0,
+    },
+
     PREREQ_PM       => {
         'Moo'       => 0,
         'Kelp'      => 0,

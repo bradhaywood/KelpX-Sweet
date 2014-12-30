@@ -65,3 +65,11 @@
 2014-12-25 11:59:16 - info - 127.0.0.1 - GET /hello/world - TestApp::Controller::Root::hello
 2014-12-25 11:59:21 - info - 127.0.0.1 - GET /hello/world - TestApp::Controller::Root::hello
 2014-12-25 11:59:25 - info - 127.0.0.1 - GET /about - CODE(0x13ca600)
+2014-12-30 17:17:08 - info - 127.0.0.1 - GET / - MyApp::Controller::Main::hello
+2014-12-30 17:17:12 - critical - $VAR1 = bless( [
+                 'file',
+                 'greet.tt: not found',
+                 undef
+               ], 'Template::Exception' );
+
+2014-12-30 17:17:49 - info - 127.0.0.1 - GET /greet - MyApp::Controller::Main::greet

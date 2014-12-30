@@ -2,3 +2,9 @@
 
 2014-12-24 15:09:20 - critical - CODE(0x2476e00) did not render for method GET at /opt/perl-5.14.4/lib/site_perl/5.14.4/Kelp.pm line 196.
 
+2014-12-30 17:17:12 - critical - $VAR1 = bless( [
+                 'file',
+                 'greet.tt: not found',
+                 undef
+               ], 'Template::Exception' );
+

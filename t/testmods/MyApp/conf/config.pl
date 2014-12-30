@@ -1,6 +1,6 @@
 # Common settings
 {
-    modules      => [qw/Template JSON Logger/],
+    modules      => [qw/Template::Toolkit JSON Logger/],
     modules_init => {
 
         # One log for errors and one for debug
@@ -31,9 +31,9 @@
             pretty => 1
         },
 
-        # Enable UTF-8 in Template
-        Template => {
-            encoding => 'utf8'
+        'Template::Toolkit' => {
+            ENCODING => 'utf8',
+            INCLUDE_PATH => [app->path . '/views'],
         }
     }
 };
