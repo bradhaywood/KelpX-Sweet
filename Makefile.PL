@@ -11,6 +11,7 @@ WriteMakefile(
         'Test::More' => 0,
         'Kelp::Test' => 0,
         'Kelp::Module::Template::Toolkit' => 0,
+        'DBIx::Class' => 0,
     },
 
     PREREQ_PM       => {

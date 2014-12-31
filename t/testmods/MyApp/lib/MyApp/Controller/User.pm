@@ -13,3 +13,9 @@ sub view {
     my ($self, $id) = @_;
     return $self->stash('title') . " ${id}";
 }
+
+sub list {
+    my ($self) = @_;
+    my @users  = $self->model('MyDB::User')->all;
+    return join ', ', map { $_->name } @users;
+}

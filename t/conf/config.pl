@@ -11,5 +11,12 @@
             ENCODING => 'utf8',
             INCLUDE_PATH => ['t/testmods/MyApp/views'],
         }
-    }
+    },
+    
+    'models' => {
+        'MyDB' => {
+            model => 'MyApp::Model::MyDB',
+            args  => ['dbi:SQLite:t/app.db'],
+        },
+    },
 };
