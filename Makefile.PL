@@ -19,5 +19,6 @@ WriteMakefile(
         'Kelp'      => 0,
         'true'      => 0,
         'Text::ASCIITable' => 0,
+        'Module::Find' => 0,
     },        
 );
