@@ -5,23 +5,43 @@ use strict;
 use true;
 use Text::ASCIITable;
 use FindBin;
+use Module::Find 'useall';
 use base 'Kelp';
 
 our $VERSION = '0.001';
 
 sub import {
-    my ($class, %args) = @_;
+    my ($class, %opts) = @_;
     strict->import();
     warnings->import();
     true->import();
     my $caller = caller;
     my $routes = [];
     my $configs = {};
+    my $auto    = 0;
     {
         no strict 'refs';
         push @{"${caller}::ISA"}, 'Kelp';
+         # check args
+        # auto load routes?
+        if ($opts{"-auto"}) {
+            $auto = 1;
+            my $route_tb = Text::ASCIITable->new;
+            $route_tb->setCols('Routes');
+            my @mod_routes = useall "${caller}::Route";
+            for my $mod (@mod_routes) {
+                $route_tb->addRow($mod);
+                push @$routes, $mod->get_routes();
+            }
+
+            print $route_tb . "\n";
+        }
+
         *{"${caller}::new"} = sub { return shift->SUPER::new(@_); };
         *{"${caller}::maps"} = sub {
+            die "Please don't use -auto and maps at the same time\n"
+                if $auto;
+
             my ($route_names) = @_;
             unless (ref $route_names eq 'ARRAY') {
                 die "routes() expects an array references";
@@ -155,16 +175,19 @@ sub import {
         }
 
         # if 'around' is not available, import a small version of our own
-        unless ($caller->can('around')) {
-            *{"${caller}::around"} = sub {
-                my ($method, $code) = @_;
+        {
+            no warnings 'redefine';
+            unless ($caller->can('around')) {
+                *{"${caller}::around"} = sub {
+                    my ($method, $code) = @_;
 
-                my $fullpkg  = "${caller}::${method}";
-                my $old_code = \&$fullpkg; 
-                *{"${fullpkg}"} = sub {
-                      $code->($old_code, @_);
+                    my $fullpkg  = "${caller}::${method}";
+                    my $old_code = \&$fullpkg; 
+                    *{"${fullpkg}"} = sub {
+                          $code->($old_code, @_);
+                    };
                 };
-            };
+            }
         }
     }
 }
@@ -441,6 +464,32 @@ Then, you just create C<hello.tt>.
   <h2>Hello, [% name %]</h2>
 
 While not really required, it does save a bit of typing and can come in quite useful.
+
+=head1 IMPORT OPTIONS
+
+=head2 -auto
+
+Importing -auto will automatically include any route modules within your C<MyApp::Route> namespace.
+For example, we have two controllers, C<Main> and C<New>
+
+  package MyApp::Route::Main;
+
+  use KelpX::Sweet::Route;
+  
+  get '/' => sub { "Hi" };
+
+  package MyApp::Route::New;
+  
+  use KelpX::Sweet::Route;
+  
+  get '/new/url' => sub { "New one" };
+  
+Then to kick off our app, all we need is
+
+  package MyApp;
+  use KelpX::Sweet -auto => 1;
+
+That's it. KelpX::Sweet will complain if you attempt to use C<maps> at the same time, because obviously that's just redundant.
 
 =head1 REALLY COOL THINGS TO NOTE
 

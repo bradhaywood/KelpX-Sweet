@@ -262,6 +262,37 @@ Then, you just create `hello.tt`.
 
 While not really required, it does save a bit of typing and can come in quite useful.
 
+# IMPORT OPTIONS
+
+## -auto
+
+Importing -auto will automatically include any route modules within your `MyApp::Route` namespace.
+For example, we have two controllers, `Main` and `New`
+
+```perl
+package MyApp::Route::Main;
+
+use KelpX::Sweet::Route;
+
+get '/' => sub { "Hi" };
+
+package MyApp::Route::New;
+
+use KelpX::Sweet::Route;
+
+get '/new/url' => sub { "New one" };
+
+```
+
+Then to kick off our app, all we need is
+
+```perl
+package MyApp;
+use KelpX::Sweet -auto => 1;
+```
+
+That's it. KelpX::Sweet will complain if you attempt to use `maps` at the same time, because obviously that's just redundant.
+
 # REALLY COOL THINGS TO NOTE
 
 ## Default imports
