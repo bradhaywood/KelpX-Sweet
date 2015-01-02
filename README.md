@@ -102,6 +102,44 @@ bridge '/users/:id' => sub {
 get '/users/:id/view' => 'Controller::Users::view';
 ```
 
+## has
+
+If you only want basic accessors and KelpX::Sweet detects you don't have any OOP frameworks activated with `has`, then it will import its 
+own little method which works similar to [Moo](https://metacpan.org/pod/Moo)'s. Currently, it only supports `is`, `required` and `default`.
+
+```perl
+package MyApp;
+  
+use KelpX::Sweet;
+has 'x' => ( is => 'rw', default => sub { "Hello, world" } );
+
+package MyApp::Controller::Main;
+  
+use KelpX::Sweet::Controller;
+
+sub hello { shift->x; } # Hello, world
+```
+
+## around
+
+Need more power? Want to modify the default `build` method? No problem. Similar to `has`, if KelpX::Sweet detects you have no `around` method, it will import one. 
+This allows you to tap into build if you really want to for some reason.
+
+```perl
+package MyApp;
+
+use KelpX::Sweet;
+
+around 'build' => sub {
+    my $method = shift;
+    my $self   = shift;
+    my $routes = $self->routes;
+    $routes->add('/manual' => sub { "Manually added" });
+
+    $self->$method(@_);
+};
+```
+
 # MODELS
 
 You can always use an attribute to create a database connection, or separate them using models in a slightly cleaner way.

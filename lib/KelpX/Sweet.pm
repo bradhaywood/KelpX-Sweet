@@ -148,6 +148,63 @@ sub import {
                 $self->template($name, $self->stash);
             }    
         };
+
+        # if 'has' is not available (ie: no Moose, Moo, Mouse, etc), then import our own small version
+        unless ($caller->can('has')) {
+            *{"${caller}::has"} = \&_has;
+        }
+
+        # if 'around' is not available, import a small version of our own
+        unless ($caller->can('around')) {
+            *{"${caller}::around"} = sub {
+                my ($method, $code) = @_;
+
+                my $fullpkg  = "${caller}::${method}";
+                my $old_code = \&$fullpkg; 
+                *{"${fullpkg}"} = sub {
+                      $code->($old_code, @_);
+                };
+            };
+        }
+    }
+}
+
+sub _has {
+    my ($acc, %attrs) = @_;
+    my $class = caller;
+    my $ro = 0;
+    my $rq = 0;
+    my $df;
+    if (%attrs) {
+        if ($attrs{is} eq 'ro') { $ro = 1; }
+        if ($attrs{required}) { $rq = 1; }
+        if ($attrs{default}) { $df = $attrs{default}; }
+
+        if ($df) {
+            die "has: default expects a code reference\n"
+                unless ref $df eq 'CODE';
+        }
+    }
+    
+    {
+        no strict 'refs';
+        *{"${class}::${acc}"} = sub {
+            #if ($attrs{default}) { $_[0]->{$name} = $attrs{default}; }
+            if ($rq and not $df) {
+                if (not $_[0]->{$acc} and not $_[1]) {
+                    die "You attempted to use a field that can't be left blank: ${acc}";
+                }
+            }
+
+            if ($df) { $_[0]->{$acc} = $df->(); }
+        
+            if (@_ == 2) {
+                die "Can't modify a readonly accessor: ${acc}"
+                    if $ro;
+                $_[0]->{$acc} = $_[1];
+            }
+            return $_[0]->{$acc};
+        };
     }
 }
 
@@ -244,6 +301,40 @@ Bridges are cool, so please check out the Kelp documentation for more informatio
   };
 
   get '/users/:id/view' => 'Controller::Users::view';
+
+=head2 has
+
+If you only want basic accessors and KelpX::Sweet detects you don't have any OOP frameworks activated with C<has>, then it will import its 
+own little method which works similar to L<Moo>'s. Currently, it only supports C<is>, C<required> and C<default>.
+
+  package MyApp;
+    
+  use KelpX::Sweet;
+  has 'x' => ( is => 'rw', default => sub { "Hello, world" } );
+
+  package MyApp::Controller::Main;
+    
+  use KelpX::Sweet::Controller;
+  
+  sub hello { shift->x; } # Hello, world
+
+=head2 around
+
+Need more power? Want to modify the default C<build> method? No problem. Similar to C<has>, if KelpX::Sweet detects you have no C<around> method, it will import one. 
+This allows you to tap into build if you really want to for some reason.
+
+  package MyApp;
+
+  use KelpX::Sweet;
+
+  around 'build' => sub {
+      my $method = shift;
+      my $self   = shift;
+      my $routes = $self->routes;
+      $routes->add('/manual' => sub { "Manually added" });
+
+      $self->$method(@_);
+  };
 
 =head1 MODELS
 
