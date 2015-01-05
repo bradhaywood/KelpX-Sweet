@@ -108,17 +108,28 @@ sub import {
                     if (my $ret = $mod->build(@args)) {
                         if (ref $ret) {
                             $model_tb->addRow($mod, $name);
-                            $self->{_models}->{$name} = $ret;
+                            # returned a standard hash reference
+                            if (ref $ret eq 'HASH') {
+                                foreach my $key (keys %$ret) {
+                                    if (ref $ret->{$key}) {
+                                        $self->{_models}->{"${name}::${key}"} = $ret->{$key};
+                                        $model_tb->addRow(ref $ret->{$key}, "${name}::${key}");
+                                    }
+                                }
+                            }
+                            else {
+                                $self->{_models}->{$name} = $ret;
                         
-                            # is this dbix::class?
-                            require mro;
-                            my $dbref = ref $ret;
-                            if (grep { $_ eq 'DBIx::Class::Schema' } @{mro::get_linear_isa($dbref)}) {
-                                if ($dbref->can('sources')) {
-                                    my @sources = $dbref->sources;
-                                    for my $source (@sources) {
-                                        $self->{_models}->{"${name}::${source}"} = $ret->resultset($source);
-                                        $model_tb->addRow("${dbref}::ResultSet::${source}", "${name}::${source}");
+                                # is this dbix::class?
+                                require mro;
+                                my $dbref = ref $ret;
+                                if (grep { $_ eq 'DBIx::Class::Schema' } @{mro::get_linear_isa($dbref)}) {
+                                    if ($dbref->can('sources')) {
+                                        my @sources = $dbref->sources;
+                                        for my $source (@sources) {
+                                            $self->{_models}->{"${name}::${source}"} = $ret->resultset($source);
+                                            $model_tb->addRow("${dbref}::ResultSet::${source}", "${name}::${source}");
+                                        }
                                     }
                                 }
                             }
@@ -397,6 +408,41 @@ That's all you need. Now you can pull that model instance out at any time in you
       my ($self) = @_;
       my @users  = $self->model('LittleDB')->table('users')->all;
       return join ', ', map { $_->name } @users;
+  }
+
+=head2 Named ResultSets
+
+If you're not using DBIx::Class, you can still have similar styled resultsets. Simply return a standard hash reference instead of a blessed object 
+from the C<build> method, like so
+
+  package TestApp::Model::LittleDB;
+  
+  use KelpX::Sweet::Model;
+  use DBIx::Lite;
+
+  sub build {
+      my ($self, @args) = @_;
+      my $schema = DBIx::Lite->connect(@args);
+      return {
+          'User'       => $schema->table('users'),
+          'Product'    => $schema->table('products'),
+      };
+  }
+
+Then, you can do this stuff in your controllers
+
+  package TestApp::Controller::Assets;
+
+  sub users {
+      my  ($self) = @_;
+      my @users   = $self->model('LittleDB::User')->all;
+      return join "<br>", map { $_->name . " (" . $_->email . ")" } @users;
+  }
+
+  sub products {
+      my ($self) = @_;
+      my @products = $self->model('LittleDB::Product')->all;
+      return join "<br>", map { $_->name . " (" . sprintf("%.2f", $_->value) . ")" } @products;
   }
 
 =head2 Models and DBIx::Class
