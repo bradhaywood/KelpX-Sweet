@@ -9,6 +9,6 @@ my $t = Kelp::Test->new( app => $app );
 
 $t->request( GET '/greet' )
     ->code_is(200)
-    ->content_is("How are you, World?\n");
+    ->content_is("How are you, World?\r\n");
 
 done_testing();
